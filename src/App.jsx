@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, LogOut, UserCheck } from 'lucide-react';
 
 export default function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   const API_BASE_URL = "https://mern-stack-user-portal.onrender.com";
+
+  // Check login state on page refresh
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,6 +35,9 @@ export default function App() {
 
       if (res.ok) {
         toast.success('Welcome back! Login Successful 🎉');
+        const userData = { email, token: data.token || 'logged_in' };
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
       } else {
         toast.error(data.message || 'Login failed!');
       }
@@ -37,50 +49,80 @@ export default function App() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    toast.success('Logged out successfully!');
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <Toaster position="top-right" reverseOrder={false} />
+    <div className="min-h-screen w-full flex flex-col justify-center items-center bg-gray-50 text-center p-4">
+      <Toaster position="top-center" reverseOrder={false} />
 
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Welcome Back</h2>
-        
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email Address</label>
-            <input 
-              type="email" 
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
+      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg border border-gray-100 flex flex-col items-center">
+        {user ? (
+          // Logged-in Dashboard State
+          <div className="flex flex-col items-center space-y-4 w-full">
+            <div className="p-4 bg-green-100 rounded-full text-green-600">
+              <UserCheck className="w-12 h-12" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800">Welcome Back!</h2>
+            <p className="text-gray-600 font-medium">{user.email}</p>
+            
+            <button 
+              onClick={handleLogout}
+              className="mt-4 w-full flex items-center justify-center py-2.5 px-4 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition duration-200"
+            >
+              <LogOut className="w-4 h-4 mr-2" /> Logout
+            </button>
           </div>
+        ) : (
+          // Center-aligned Login Form
+          <>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h2>
+            <p className="text-gray-500 text-sm mb-6">Enter your credentials to access your account</p>
+            
+            <form onSubmit={handleLogin} className="w-full flex flex-col items-center space-y-4">
+              <div className="w-full text-center">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input 
+                  type="email" 
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full text-center rounded-lg border border-gray-300 p-2.5 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                  placeholder="name@company.com"
+                />
+              </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
-            <input 
-              type="password" 
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-          </div>
+              <div className="w-full text-center">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input 
+                  type="password" 
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full text-center rounded-lg border border-gray-300 p-2.5 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                  placeholder="••••••••"
+                />
+              </div>
 
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
-          >
-            {loading ? (
-              <span className="flex items-center">
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Logging in...
-              </span>
-            ) : (
-              'Sign In'
-            )}
-          </button>
-        </form>
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="w-full flex justify-center items-center py-2.5 px-4 mt-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 transition duration-200"
+              >
+                {loading ? (
+                  <span className="flex items-center">
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Logging in...
+                  </span>
+                ) : (
+                  'Sign In'
+                )}
+              </button>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );
