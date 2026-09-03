@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { Loader2, LogOut, Camera, User, Sun, Moon } from 'lucide-react';
 
 export default function App() {
   const [isRegister, setIsRegister] = useState(false);
@@ -95,29 +94,35 @@ export default function App() {
     <div className={`min-h-screen w-full flex flex-col justify-center items-center p-4 transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
       <Toaster position="top-center" reverseOrder={false} />
 
+      {/* Dark Mode Switcher */}
       <button 
         onClick={() => setDarkMode(!darkMode)}
         className={`absolute top-6 right-6 p-2.5 rounded-full shadow-sm transition duration-200 ${darkMode ? 'bg-gray-800 text-yellow-400' : 'bg-white text-gray-600'}`}
       >
-        {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        {darkMode ? (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+        ) : (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+        )}
       </button>
 
       <div className={`w-full max-w-md p-8 rounded-2xl shadow-sm transition-colors duration-300 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
         {user ? (
+          /* Profile Dashboard */
           <div className="flex flex-col items-center space-y-4 w-full text-center">
             <div className="relative">
               <div className={`w-24 h-24 rounded-full overflow-hidden border-4 flex items-center justify-center ${darkMode ? 'border-indigo-900 bg-gray-700' : 'border-indigo-100 bg-gray-100'}`}>
                 {profilePic ? (
                   <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
-                  <User className="w-12 h-12 text-gray-400" />
+                  <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 )}
               </div>
               <label 
                 htmlFor="profile-upload" 
                 className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full cursor-pointer shadow-md transition duration-200"
               >
-                <Camera className="w-4 h-4" />
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 <input id="profile-upload" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
               </label>
             </div>
@@ -129,10 +134,11 @@ export default function App() {
               onClick={handleLogout}
               className="mt-4 w-full flex items-center justify-center py-2.5 px-4 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition duration-200"
             >
-              <LogOut className="w-4 h-4 mr-2" /> Logout
+              Logout
             </button>
           </div>
         ) : (
+          /* Form Section */
           <div className="flex flex-col items-center w-full">
             <h2 className="text-3xl font-bold mb-1 text-center">
               {isRegister ? 'Create Account' : 'Welcome Back'}
@@ -185,13 +191,7 @@ export default function App() {
                 disabled={loading}
                 className="w-full flex justify-center items-center py-3 px-4 mt-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition duration-200"
               >
-                {loading ? (
-                  <span className="flex items-center">
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...
-                  </span>
-                ) : (
-                  isRegister ? 'Sign Up' : 'Login'
-                )}
+                {loading ? 'Processing...' : (isRegister ? 'Sign Up' : 'Login')}
               </button>
             </form>
 
