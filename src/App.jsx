@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { Loader2, LogOut, UserCheck } from 'lucide-react';
+import { Loader2, LogOut, UserCheck, Camera, User } from 'lucide-react';
 
 export default function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [profilePic, setProfilePic] = useState(null);
 
   const API_BASE_URL = "https://mern-stack-user-portal.onrender.com";
 
-  // Check login state on page refresh
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      const parsed = JSON.parse(savedUser);
+      setUser(parsed);
+      setProfilePic(parsed.profilePic || null);
     }
   }, []);
 
@@ -35,7 +37,7 @@ export default function App() {
 
       if (res.ok) {
         toast.success('Welcome back! Login Successful 🎉');
-        const userData = { email, token: data.token || 'logged_in' };
+        const userData = { email, token: data.token || 'logged_in', profilePic: null };
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
       } else {
@@ -49,9 +51,29 @@ export default function App() {
     }
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error('Image size should be less than 2MB!');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePic(reader.result);
+        const updatedUser = { ...user, profilePic: reader.result };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        toast.success('Profile picture updated!');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
+    setProfilePic(null);
     toast.success('Logged out successfully!');
   };
 
@@ -61,12 +83,32 @@ export default function App() {
 
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg border border-gray-100 flex flex-col items-center">
         {user ? (
-          // Logged-in Dashboard State
+          // Logged-in Dashboard with Profile Image Upload
           <div className="flex flex-col items-center space-y-4 w-full">
-            <div className="p-4 bg-green-100 rounded-full text-green-600">
-              <UserCheck className="w-12 h-12" />
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-indigo-100 bg-gray-100 flex items-center justify-center">
+                {profilePic ? (
+                  <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-12 h-12 text-gray-400" />
+                )}
+              </div>
+              <label 
+                htmlFor="profile-upload" 
+                className="absolute bottom-0 right-0 bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-full cursor-pointer shadow-md transition duration-200"
+              >
+                <Camera className="w-4 h-4" />
+                <input 
+                  id="profile-upload" 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleImageChange} 
+                  className="hidden" 
+                />
+              </label>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800">Welcome Back!</h2>
+
+            <h2 className="text-2xl font-bold text-gray-800">User Profile</h2>
             <p className="text-gray-600 font-medium">{user.email}</p>
             
             <button 
