@@ -1,16 +1,37 @@
-# React + Vite
+# 🚀 MERN Stack Authentication & User Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A production-ready, full-stack MERN authentication portal featuring live backend integration, profile management, local session persistence, responsive UI, dynamic theme switching, and real-time toast feedback.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+* **Authentication Flow:** User Signup & Login powered by Render live Express/MongoDB API.
+* **Session Persistence:** Automatic re-login on refresh via browser `localStorage`.
+* **Profile Management:** Profile picture upload preview & editable Name/Bio details.
+* **UI & UX:** Modern layout built with Tailwind CSS & dynamic Dark/Light mode toggle.
+* **Notifications:** Real-time feedback using `react-hot-toast`.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Frontend:** React, Vite, Tailwind CSS, React Hot Toast
+* **Backend:** Node.js, Express.js, MongoDB Atlas
+* **Deployment:** Vercel (Frontend), Render (Backend)
 
-## Expanding the Oxlint configuration
+## 🌐 Live Links
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+* **Live Frontend:** [https://mern-stack-user-portal.vercel.app](https://mern-stack-user-portal.vercel.app)
+* **Live API Backend:** `https://mern-stack-user-portal.onrender.com`
+
+## 🚀 Local Setup
+
+```bash
+# Clone the repository
+git clone [https://github.com/sabeersabeer0514-ctr/mern-stack-user-portal.git](https://github.com/sabeersabeer0514-ctr/mern-stack-user-portal.git)
+
+# Navigate to project directory
+cd mern-backend
+
+# Install dependencies
+npm install
+
+# Run backend server
+npm start
